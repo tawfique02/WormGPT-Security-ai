@@ -16,7 +16,7 @@
 Run the following command in your Linux terminal:
 
 ```bash
-git clone [https://github.com/tawfique02/WormGPT-Security-ai.git
+git clone https://github.com/tawfique02/WormGPT-Security-ai.git
 cd WormGPT-Security-ai
 chmod +x ai.sh
 bash ai.sh
