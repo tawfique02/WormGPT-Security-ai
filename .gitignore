@@ -1,0 +1,9 @@
+# Temporary build files generated during execution
+Modelfile.wormgpt
+Modelfile.*
+*.tmp
+*.log
+
+# System files
+.DS_Store
+Thumbs.db
