@@ -4,8 +4,7 @@
 #  Engineered by Tawfique Elahey  -  github.com/tawfique02
 # ==============================================================================
 
-set -uo pipefail          # <-- FIX #1: removed -e (too fragile with bg jobs/pipes)
-                          #     We handle errors explicitly instead.
+set -uo pipefail
 
 # ---- Colors ----------------------------------------------------------------
 R='\033[0;31m'; G='\033[0;32m'; Y='\033[1;33m'; C='\033[0;36m'
@@ -29,7 +28,7 @@ typewrite() {
   printf "%b\n" "$NC"
 }
 
-# FIX #5: guard against empty PID, don't let kill errors kill us
+# FIX #5: guard against empty PID
 spinner() {
   local pid="${1:-}" msg="${2:-Working}"
   local frames=('⠋' '⠙' '⠹' '⠸' '⠼' '⠴' '⠦' '⠧' '⠇' '⠏')
@@ -52,7 +51,7 @@ warn() { printf "  ${Y}${B}!${NC} %s\n" "$1"; }
 err()  { printf "  ${R}${B}✗${NC} %s\n" "$1"; }
 info() { printf "  ${C}ℹ${NC} %s\n" "$1"; }
 
-# FIX #3: use a bash array of single-char glyphs so we never split UTF-8
+# FIX #3: use a bash array of single-char glyphs
 matrix_rain() {
   local duration="${1:-2}"
   local chars=(0 1 ｱ ｲ ｳ ｴ ｵ ｶ ｷ ｸ ｹ ｺ ｻ ｼ ｽ ｾ ｿ ﾀ ﾂ ﾃ ﾅ ﾆ ﾇ ﾈ ﾊ ﾋ ﾌ ﾎ ﾏ)
@@ -191,7 +190,6 @@ line
 typewrite "  [1/6]  Inspecting hardware architecture..." 0.005 "$C"
 thin
 
-# FIX #9: safe parse with fallback defaults
 TOTAL_RAM_KB=$(awk '/MemTotal/ {print $2}' /proc/meminfo 2>/dev/null || echo 0)
 [ -z "$TOTAL_RAM_KB" ] && TOTAL_RAM_KB=0
 TOTAL_RAM_GB=$((TOTAL_RAM_KB / 1024 / 1024))
@@ -232,7 +230,6 @@ printf "  ${G}${B}4)${NC} deepseek-r1-abliterated ${D}(Heavy 8B reasoning - need
 echo
 printf "  ${C}▶${NC} choice ${D}[1-4, default 1]${NC}: "
 
-# FIX #11: EOF-safe read (non-interactive runs won't die)
 MODEL_CHOICE=""
 if ! read -r MODEL_CHOICE; then
   MODEL_CHOICE="1"
@@ -271,7 +268,6 @@ thin
 if ! command -v ollama &>/dev/null; then
   (curl -fsSL https://ollama.com/install.sh | sh) >/dev/null 2>&1 &
   spinner $! "Installing Ollama"
-  # FIX #10: rehash PATH after install
   hash -r 2>/dev/null || true
   export PATH="/usr/local/bin:$PATH"
 else
@@ -302,7 +298,6 @@ typewrite "  [5/6]  Fetching weights and compiling UNCENSORED engine..." 0.005 "
 thin
 info "Pulling base model: ${B}${SELECTED_BASE}${NC}  ${D}(first run may take a while)${NC}"
 
-# FIX #6: no pipe-into-while (subshell); use process substitution
 while IFS= read -r ln; do
   case "$ln" in
     *"pulling"*|*"verifying"*|*"writing"*|*"%"*)
