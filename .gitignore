@@ -1,9 +1,20 @@
-# Temporary build files generated during execution
-Modelfile.wormgpt
-Modelfile.*
-*.tmp
-*.log
 
-# System files
+### `.gitignore`
+```gitignore
+# Runtime artifacts
+Modelfile.wormgpt
+*.log
+*.tmp
+
+# User data
+.env
+config.local
+
+# OS
 .DS_Store
 Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
